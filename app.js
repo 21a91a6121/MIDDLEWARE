@@ -1,4 +1,4 @@
-const express = require("express");
+sconst express = require("express");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const path = require("path");
@@ -49,7 +49,7 @@ const convertDDBObjToResObj = (dbObj) => {
 
 function authenticateToken(request, response, next) {
   let jwtToken;
-  const authHeader = request.header["authorization"];
+  const authHeader = request.headers["authorization"];
   if (authHeader !== undefined) {
     jwtToken = authHeader.split(" ")[1];
   }
@@ -73,7 +73,7 @@ app.post("/login/", async (request, response) => {
   const selectUser = `SELECT * FROM user WHERE username = '${username}';`;
   const dbUser = await db.get(selectUser);
   if (dbUser === undefined) {
-    response.send(400);
+    response.status(400);
     response.send("Invalid user");
   } else {
     const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
@@ -84,7 +84,8 @@ app.post("/login/", async (request, response) => {
       const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
       response.send({ jwtToken });
     } else {
-      response.status(400), response.send("Invalid password");
+      response.status(400);
+      response.send("Invalid password");
     }
   }
 });
