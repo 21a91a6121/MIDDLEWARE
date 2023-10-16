@@ -70,11 +70,11 @@ function authenticateToken(request, response, next) {
 
 app.post("/login/", async (request, response) => {
   const { username, password } = request.body;
-  const selectUser = `SELECT * FROM user WHERE username = ${username};`;
+  const selectUser = `SELECT * FROM user WHERE username = '${username}';`;
   const dbUser = await db.get(selectUser);
   if (dbUser === undefined) {
     response.send(400);
-    response.send("Invalid User");
+    response.send("Invalid user");
   } else {
     const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
     if (isPasswordMatched === true) {
@@ -84,7 +84,7 @@ app.post("/login/", async (request, response) => {
       const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
       response.send({ jwtToken });
     } else {
-      response.status(400), response.send("Invalid Password");
+      response.status(400), response.send("Invalid password");
     }
   }
 });
@@ -118,9 +118,9 @@ app.get(
 app.post("/districts/", authenticateToken, async (request, response) => {
   const { stateId, districtName, cases, cured, active, deaths } = request.body;
   const postQuery = `INSERT INTO district (state_id,district_name,cases,cured,active,deaths) 
-    VALUES (${stateId}, ${districtName} , ${cases} ,${cured} , ${active} , ${deaths});`;
+    VALUES (${stateId}, '${districtName}' , ${cases} ,${cured} , ${active} , ${deaths});`;
   await db.run(postQuery);
-  response.send("District Added Successfully");
+  response.send("District Successfully Added");
 });
 
 app.delete(
@@ -147,13 +147,13 @@ app.put(
       active,
       deaths,
     } = request.body;
-    const updateQuery = `UPDATE district SET district_name = ${districtName},
+    const updateQuery = `UPDATE district SET district_name = '${districtName}',
     state_id = ${stateId},
     cases = ${cases},
     cured = ${cured},
     active = ${active},
     deaths = ${deaths}
-    WHERE district_id = ${districtId};`;
+    WHERE district_id = '${districtId}';`;
     await db.run(updateQuery);
     response.send("District Details Updated");
   }
