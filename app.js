@@ -1,4 +1,4 @@
-sconst express = require("express");
+const express = require("express");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const path = require("path");
@@ -49,7 +49,7 @@ const convertDDBObjToResObj = (dbObj) => {
 
 function authenticateToken(request, response, next) {
   let jwtToken;
-  const authHeader = request.headers["authorization"];
+  const authHeader = request.header["authorization"];
   if (authHeader !== undefined) {
     jwtToken = authHeader.split(" ")[1];
   }
